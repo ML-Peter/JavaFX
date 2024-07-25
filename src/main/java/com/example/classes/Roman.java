@@ -1,4 +1,4 @@
-package com.example;
+package com.example.classes;
 
 public class Roman extends Livre {
     private String categorie;

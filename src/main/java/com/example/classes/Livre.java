@@ -1,4 +1,4 @@
-package com.example;
+package com.example.classes;
 
 public class Livre {
     private String code; // ID du livre

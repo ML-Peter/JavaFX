@@ -1,9 +1,9 @@
-package com.example;
+package com.example.classes;
 
-public class Biographie extends Livre {
+public class ScienceFiction extends Livre {
     private String categorie;
 
-    public Biographie(String code, String nom, String auteur, String maisonEdition, String categorie) {
+    public ScienceFiction(String code, String nom, String auteur, String maisonEdition, String categorie) {
         super(code, nom, auteur, maisonEdition, categorie);
         this.categorie = categorie;
     }

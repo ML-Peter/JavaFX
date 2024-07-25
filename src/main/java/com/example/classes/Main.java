@@ -1,7 +1,8 @@
-package com.example;
-//import com.example.Bibliotheque;
+package com.example.classes;
 import java.sql.*;
 import java.util.Scanner;
+
+import com.example.dataBase.DatabaseOperations;
 
 public class Main {
     public static void main(String[] args) {
@@ -13,7 +14,7 @@ public class Main {
         dbOps.createTableForClass(Livre.class);
 
         // Charger les livres depuis la base de données
-        chargerLivresDepuisBaseDeDonnees(bibliotheque);
+        DatabaseOperations.chargerLivresDepuisBaseDeDonnees(bibliotheque);
 
         Scanner scanner = new Scanner(System.in);
         String choix;
@@ -56,7 +57,7 @@ public class Main {
                     Livre nouveauLivre = new Livre(codeModif, nouveauNom, nouvelAuteur, nouvelleMaisonEdition,
                             nouvelleCategorie);
                     bibliotheque.modifierLivre(codeModif, nouveauLivre);
-                    sauvegarderLivresDansBaseDeDonnees(bibliotheque);
+                    DatabaseOperations.sauvegarderLivresDansBaseDeDonnees(bibliotheque);
                     break;
                 case "3":
                     System.out.print("Entrez le nom du livre à rechercher : ");
@@ -87,7 +88,7 @@ public class Main {
                     System.out.print("Entrez le code du livre à supprimer : ");
                     String codeSuppr = scanner.nextLine();
                     bibliotheque.supprimerLivre(codeSuppr);
-                    supprimerLivreDeBaseDeDonnees(codeSuppr);
+                    DatabaseOperations.supprimerLivreDeBaseDeDonnees(codeSuppr);
                     System.out.println("Le livre avec le code '" + codeSuppr + "' a été supprimé.");
                     break;
                 case "8":
@@ -103,7 +104,7 @@ public class Main {
                     String categorieAjout = scanner.nextLine();
                     Livre livreAjout = new Livre(codeAjout, nomAjout, auteurAjout, maisonEditionAjout, categorieAjout);
                     bibliotheque.ajouterLivre(livreAjout);
-                    ajouterLivreDansBaseDeDonnees(livreAjout);
+                    DatabaseOperations.ajouterLivreDansBaseDeDonnees(livreAjout);
                     System.out.println("Le livre '" + nomAjout + " de " + auteurAjout + "' a été ajouté.");
                     break;
                 case "9":
@@ -113,83 +114,6 @@ public class Main {
                     System.out.println("Option non valide. Veuillez réessayer.");
             }
         } while (!choix.equals("9"));
-
         scanner.close();
-    }
-
-    private static void chargerLivresDepuisBaseDeDonnees(Bibliotheque bibliotheque) {
-        try (Connection conn = DatabaseSingleton.getInstance().getConnection();
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT * FROM Livre")) {
-
-            while (rs.next()) {
-                String code = rs.getString("code");
-                String nom = rs.getString("nom");
-                String auteur = rs.getString("auteur");
-                String maisonEdition = rs.getString("maisonEdition");
-                String categorie = rs.getString("categorie");
-
-                Livre livre = new Livre(code, nom, auteur, maisonEdition, categorie);
-                bibliotheque.ajouterLivre(livre);
-            }
-        } catch (SQLException e) {
-            System.out.println("Erreur lors du chargement des livres depuis la base de données.");
-            e.printStackTrace();
-        }
-    }
-
-    private static void sauvegarderLivresDansBaseDeDonnees(Bibliotheque bibliotheque) {
-        try (Connection conn = DatabaseSingleton.getInstance().getConnection();
-                Statement stmt = conn.createStatement()) {
-
-            stmt.executeUpdate("DELETE FROM Livre"); // Clear existing records
-
-            for (Livre livre : bibliotheque.getLivres()) {
-                String query = "INSERT INTO Livre (code, nom, auteur, maisonEdition, categorie) VALUES (?, ?, ?, ?, ?)";
-                try (PreparedStatement pstmt = conn.prepareStatement(query)) {
-                    pstmt.setString(1, livre.getCode());
-                    pstmt.setString(2, livre.getNom());
-                    pstmt.setString(3, livre.getAuteur());
-                    pstmt.setString(4, livre.getMaisonEdition());
-                    pstmt.setString(5, livre.getCategorie());
-                    pstmt.executeUpdate();
-                }
-                System.out.println("Les livres ont été sauvegardés dans la base de données.");
-            }
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de la sauvegarde des livres dans la base de données.");
-            e.printStackTrace();
-        }
-    }
-
-    private static void ajouterLivreDansBaseDeDonnees(Livre livre) {
-        try (Connection conn = DatabaseSingleton.getInstance().getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(
-                        "INSERT INTO Livre (code, nom, auteur, maisonEdition, categorie) VALUES (?, ?, ?, ?, ?)")) {
-
-            pstmt.setString(1, livre.getCode());
-            pstmt.setString(2, livre.getNom());
-            pstmt.setString(3, livre.getAuteur());
-            pstmt.setString(4, livre.getMaisonEdition());
-            pstmt.setString(5, livre.getCategorie());
-            pstmt.executeUpdate();
-            System.out.println("Le livre a été ajouté à la base de données.");
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de l'ajout du livre dans la base de données.");
-            e.printStackTrace();
-        }
-    }
-
-    private static void supprimerLivreDeBaseDeDonnees(String code) {
-        try (Connection conn = DatabaseSingleton.getInstance().getConnection();
-                PreparedStatement pstmt = conn.prepareStatement("DELETE FROM Livre WHERE code = ?")) {
-
-            pstmt.setString(1, code);
-            pstmt.executeUpdate();
-            System.out.println("Le livre a été supprimé de la base de données.");
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de la suppression du livre de la base de données.");
-            e.printStackTrace();
-        }
     }
 }
