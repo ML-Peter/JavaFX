@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.controllers.MainController" spacing="10" padding="10">
+
+    <!-- Titre de l'application -->
+    <Label text="Gestion de Bibliothèque" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+    <!-- Séparateur -->
+    <Separator />
+
+    <!-- Onglets pour différentes sections -->
+    <TabPane>
+        <!-- Onglet Ajouter/Modifier Livres -->
+        <Tab text="Gérer les Livres">
+            <VBox spacing="10" padding="10">
+                <Label text="Ajouter ou Modifier un Livre" style="-fx-font-size: 18px;" />
+
+                <HBox spacing="10">
+                    <Label text="Code :" />
+                    <TextField fx:id="txtCode" promptText="Code" />
+                </HBox>
+
+                <HBox spacing="10">
+                    <Label text="Nom :" />
+                    <TextField fx:id="txtNom" promptText="Nom" />
+                </HBox>
+
+                <HBox spacing="10">
+                    <Label text="Auteur :" />
+                    <TextField fx:id="txtAuteur" promptText="Auteur" />
+                </HBox>
+
+                <HBox spacing="10">
+                    <Label text="Maison d'édition :" />
+                    <TextField fx:id="txtMaisonEdition" promptText="Maison d'édition" />
+                </HBox>
+
+                <HBox spacing="10">
+                    <Label text="Catégorie :" />
+                    <TextField fx:id="txtCategorie" promptText="Catégorie" />
+                </HBox>
+
+                <HBox spacing="10">
+                    <Button text="Ajouter Livre" onAction="#handleAddBook" />
+                    <Button text="Modifier Livre" onAction="#handleEditBook" />
+                    <Button text="Supprimer Livre" onAction="#handleDeleteBook" />
+                </HBox>
+            </VBox>
+        </Tab>
+
+        <!-- Onglet Liste des Livres -->
+        <Tab text="Liste des Livres">
+            <VBox spacing="10" padding="10">
+                <Label text="Liste des Livres" style="-fx-font-size: 18px;" />
+                <ListView fx:id="listView" prefHeight="400" />
+            </VBox>
+        </Tab>
+
+        <!-- Onglet Détails Livre -->
+        <Tab text="Détails du Livre">
+            <VBox spacing="10" padding="10">
+                <Label text="Détails du Livre" style="-fx-font-size: 18px;" />
+
+                <HBox spacing="10">
+                    <Label text="Code :" />
+                    <TextField fx:id="detailCode" promptText="Code" editable="false" />
+                </HBox>
+
+                <HBox spacing="10">
+                    <Label text="Nom :" />
+                    <TextField fx:id="detailNom" promptText="Nom" editable="false" />
+                </HBox>
+
+                <HBox spacing="10">
+                    <Label text="Auteur :" />
+                    <TextField fx:id="detailAuteur" promptText="Auteur" editable="false" />
+                </HBox>
+
+                <HBox spacing="10">
+                    <Label text="Maison d'édition :" />
+                    <TextField fx:id="detailMaisonEdition" promptText="Maison d'édition" editable="false" />
+                </HBox>
+
+                <HBox spacing="10">
+                    <Label text="Catégorie :" />
+                    <TextField fx:id="detailCategorie" promptText="Catégorie" editable="false" />
+                </HBox>
+
+                <Label text="Résumé :" />
+                <TextArea fx:id="detailResume" promptText="Résumé" editable="false" prefRowCount="5" wrapText="true" />
+            </VBox>
+        </Tab>
+    </TabPane>
+
+    <!-- Séparateur -->
+    <Separator />
+
+    <!-- Zone d'affichage des messages -->
+    <Label text="Messages" style="-fx-font-size: 18px;" />
+    <TextArea fx:id="messageArea" prefRowCount="3" wrapText="true" editable="false" />
+</VBox>

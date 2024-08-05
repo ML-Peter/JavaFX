@@ -1,13 +1,26 @@
 package com.example.classes;
-import java.sql.*;
-import java.util.Scanner;
 
+import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import com.example.dataBase.DatabaseOperations;
+import com.example.classes.Livre;
+import com.example.classes.Bibliotheque;
 
-public class Main {
-    public static void main(String[] args) {
+public class Main extends Application {
+
+    private Bibliotheque bibliotheque;
+    private ObservableList<Livre> livresList;
+
+    @Override
+    public void start(Stage primaryStage) {
         // Créer une instance de Bibliotheque
-        Bibliotheque bibliotheque = new Bibliotheque();
+        bibliotheque = new Bibliotheque();
 
         // Créer la table 'Livre' si elle n'existe pas
         DatabaseOperations dbOps = new DatabaseOperations();
@@ -16,104 +29,117 @@ public class Main {
         // Charger les livres depuis la base de données
         DatabaseOperations.chargerLivresDepuisBaseDeDonnees(bibliotheque);
 
-        Scanner scanner = new Scanner(System.in);
-        String choix;
+        // Créer l'interface utilisateur
+        createUI(primaryStage);
+    }
 
-        do {
-            System.out.println("\n1. Obtenir un livre par son code");
-            System.out.println("2. Modifier un livre");
-            System.out.println("3. Rechercher un livre par son nom");
-            System.out.println("4. Lister les livres par lettre");
-            System.out.println("5. Obtenir le nombre total de livres");
-            System.out.println("6. Obtenir les livres par catégorie");
-            System.out.println("7. Supprimer un livre");
-            System.out.println("8. Ajouter un livre");
-            System.out.println("9. Quitter");
-            System.out.print("Choisissez une option : ");
-            choix = scanner.nextLine();
+    private void createUI(Stage primaryStage) {
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 20, 20, 20));
 
-            switch (choix) {
-                case "1":
-                    System.out.print("Entrez le code du livre : ");
-                    String code = scanner.nextLine();
-                    Livre livre = bibliotheque.getLivre(code);
-                    if (livre != null) {
-                        System.out.println("Le livre obtenu est : " + livre.getNom());
-                    } else {
-                        System.out.println("Livre non trouvé.");
-                    }
-                    break;
-                case "2":
-                    System.out.print("Entrez le code du livre à modifier : ");
-                    String codeModif = scanner.nextLine();
-                    System.out.print("Entrez le nouveau nom du livre : ");
-                    String nouveauNom = scanner.nextLine();
-                    System.out.print("Entrez le nouvel auteur du livre : ");
-                    String nouvelAuteur = scanner.nextLine();
-                    System.out.print("Entrez la nouvelle maison d'édition du livre : ");
-                    String nouvelleMaisonEdition = scanner.nextLine();
-                    System.out.print("Entrez la nouvelle catégorie du livre : ");
-                    String nouvelleCategorie = scanner.nextLine();
-                    Livre nouveauLivre = new Livre(codeModif, nouveauNom, nouvelAuteur, nouvelleMaisonEdition,
-                            nouvelleCategorie);
-                    bibliotheque.modifierLivre(codeModif, nouveauLivre);
-                    DatabaseOperations.sauvegarderLivresDansBaseDeDonnees(bibliotheque);
-                    break;
-                case "3":
-                    System.out.print("Entrez le nom du livre à rechercher : ");
-                    String nomRecherche = scanner.nextLine();
-                    Livre livreRecherche = bibliotheque.rechercherParNom(nomRecherche);
-                    if (livreRecherche != null) {
-                        System.out.println("Le livre recherché est : " + livreRecherche.getNom());
-                    } else {
-                        System.out.println("Livre non trouvé.");
-                    }
-                    break;
-                case "4":
-                    System.out.print("Entrez la lettre par laquelle les livres commencent : ");
-                    char lettre = scanner.nextLine().charAt(0);
-                    var livresParLettre = bibliotheque.listerLivresParLettre(lettre);
-                    System.out.println("Les livres commençant par " + lettre + " sont : " + livresParLettre);
-                    break;
-                case "5":
-                    System.out.println("Le nombre total de livres est : " + bibliotheque.nombreDeLivres());
-                    break;
-                case "6":
-                    System.out.print("Entrez la catégorie de livres à afficher : ");
-                    String categorie = scanner.nextLine();
-                    var livresParCategorie = bibliotheque.livresParCategorie(categorie);
-                    System.out.println("Les livres de la catégorie '" + categorie + "' sont : " + livresParCategorie);
-                    break;
-                case "7":
-                    System.out.print("Entrez le code du livre à supprimer : ");
-                    String codeSuppr = scanner.nextLine();
-                    bibliotheque.supprimerLivre(codeSuppr);
-                    DatabaseOperations.supprimerLivreDeBaseDeDonnees(codeSuppr);
-                    System.out.println("Le livre avec le code '" + codeSuppr + "' a été supprimé.");
-                    break;
-                case "8":
-                    System.out.print("Entrez le code du livre : ");
-                    String codeAjout = scanner.nextLine();
-                    System.out.print("Entrez le nom du livre : ");
-                    String nomAjout = scanner.nextLine();
-                    System.out.print("Entrez l'auteur du livre : ");
-                    String auteurAjout = scanner.nextLine();
-                    System.out.print("Entrez la maison d'édition du livre : ");
-                    String maisonEditionAjout = scanner.nextLine();
-                    System.out.print("Entrez la catégorie du livre : ");
-                    String categorieAjout = scanner.nextLine();
-                    Livre livreAjout = new Livre(codeAjout, nomAjout, auteurAjout, maisonEditionAjout, categorieAjout);
-                    bibliotheque.ajouterLivre(livreAjout);
-                    DatabaseOperations.ajouterLivreDansBaseDeDonnees(livreAjout);
-                    System.out.println("Le livre '" + nomAjout + " de " + auteurAjout + "' a été ajouté.");
-                    break;
-                case "9":
-                    System.out.println("Au revoir !");
-                    break;
-                default:
-                    System.out.println("Option non valide. Veuillez réessayer.");
-            }
-        } while (!choix.equals("9"));
-        scanner.close();
+        // Création des éléments de l'interface
+        Label lblCode = new Label("Code :");
+        TextField txtCode = new TextField();
+        Label lblNom = new Label("Nom :");
+        TextField txtNom = new TextField();
+        Label lblAuteur = new Label("Auteur :");
+        TextField txtAuteur = new TextField();
+        Label lblMaisonEdition = new Label("Maison d'édition :");
+        TextField txtMaisonEdition = new TextField();
+        Label lblCategorie = new Label("Catégorie :");
+        TextField txtCategorie = new TextField();
+        Button btnAjouter = new Button("Ajouter");
+        Button btnModifier = new Button("Modifier");
+        Button btnSupprimer = new Button("Supprimer");
+        ListView<Livre> lvLivres = new ListView<>();
+        livresList = FXCollections.observableArrayList(bibliotheque.getLivres());
+        lvLivres.setItems(livresList);
+
+        // Placement des éléments dans la grille
+        grid.add(lblCode, 0, 0);
+        grid.add(txtCode, 1, 0);
+        grid.add(lblNom, 0, 1);
+        grid.add(txtNom, 1, 1);
+        grid.add(lblAuteur, 0, 2);
+        grid.add(txtAuteur, 1, 2);
+        grid.add(lblMaisonEdition, 0, 3);
+        grid.add(txtMaisonEdition, 1, 3);
+        grid.add(lblCategorie, 0, 4);
+        grid.add(txtCategorie, 1, 4);
+        grid.add(btnAjouter, 0, 5);
+        grid.add(btnModifier, 1, 5);
+        grid.add(btnSupprimer, 2, 5);
+        grid.add(lvLivres, 2, 0, 1, 5);
+
+        // Gestion des événements
+        btnAjouter.setOnAction(event -> ajouterLivre(txtCode.getText(), txtNom.getText(), txtAuteur.getText(),
+                txtMaisonEdition.getText(), txtCategorie.getText()));
+        btnModifier.setOnAction(event -> modifierLivre(lvLivres.getSelectionModel().getSelectedItem()));
+        btnSupprimer.setOnAction(event -> supprimerLivre(lvLivres.getSelectionModel().getSelectedItem()));
+        lvLivres.getSelectionModel().selectedItemProperty()
+                .addListener((obs, oldSelection, newSelection) -> afficherLivre(newSelection));
+
+        // Création de la scène et affichage de la fenêtre
+        Scene scene = new Scene(grid, 800, 600);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("Bibliothèque");
+        primaryStage.show();
+    }
+
+    private void ajouterLivre(String code, String nom, String auteur, String maisonEdition, String categorie) {
+        Livre livre = new Livre(code, nom, auteur, maisonEdition, categorie);
+        bibliotheque.ajouterLivre(livre);
+        livresList.add(livre);
+    }
+
+    private void modifierLivre(Livre livre) {
+        // Récupérer les nouvelles valeurs des champs
+        String code = livre.getCode();
+        String nom = livre.getNom();
+        String auteur = livre.getAuteur();
+        String maisonEdition = livre.getMaisonEdition();
+        String categorie = livre.getCategorie();
+
+        // Créer un nouveau livre avec les nouvelles valeurs
+        Livre nouveauLivre = new Livre(code, nom, auteur, maisonEdition, categorie);
+        bibliotheque.modifierLivre(code, nouveauLivre);
+
+        // Mettre à jour la liste des livres
+        livresList.set(livresList.indexOf(livre), nouveauLivre);
+    }
+
+    private void supprimerLivre(Livre livre) {
+        bibliotheque.supprimerLivre(livre.getCode());
+        livresList.remove(livre);
+    }
+
+    private void afficherLivre(Livre livre) {
+        Label txtCode = new Label();
+        Label txtNom = new Label();
+        Label txtMaisonEdition = new Label();
+        Label txtAuteur = new Label();
+        Label txtCategorie = new Label();
+
+        if (livre != null) {
+            // Remplir les champs avec les informations du livre sélectionné
+            txtCode.setText(livre.getCode());
+            txtNom.setText(livre.getNom());
+            txtAuteur.setText(livre.getAuteur());
+            txtMaisonEdition.setText(livre.getMaisonEdition());
+            txtCategorie.setText(livre.getCategorie());
+        } else {
+            // Vider les champs
+            txtCode.setText("");
+            txtNom.setText("");
+            txtAuteur.setText("");
+            txtMaisonEdition.setText("");
+            txtCategorie.setText("");
+        }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }

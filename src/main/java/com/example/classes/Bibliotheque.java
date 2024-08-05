@@ -67,6 +67,4 @@ public class Bibliotheque {
     public Livre[] getLivres() {
         throw new UnsupportedOperationException("Unimplemented method 'getLivres'");
     }
-
-    
 }

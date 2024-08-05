@@ -117,4 +117,20 @@ public class DatabaseOperations {
             e.printStackTrace();
         }
     }
+
+    public static void ajouterLivre(Livre livre) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'ajouterLivre'");
+    }
+
+    public static void mettreAJourLivre(Livre selectedLivre) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'mettreAJourLivre'");
+    }
+
+    public static void supprimerLivre(Livre selectedLivre) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'supprimerLivre'");
+    }
+
 }
